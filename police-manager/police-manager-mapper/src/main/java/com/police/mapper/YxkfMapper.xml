@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.police.mapper.YxkfMapper">
+
+	<insert id="save" 
+		parameterType="com.police.pojo.YxkfPojo">
+		 insert into yxkf
+		 values(
+		 #{cjsj},
+		 #{id},
+		 #{xm},
+		 #{zjhm},
+		 #{zklsh},
+		 #{rzsj},
+		 #{zz},
+		 #{xb},
+		 #{mz},
+		 #{csrq},
+		 #{zjlx},
+		 #{jg},
+		 #{lgmc},
+		 #{lgbm},
+		 #{fh},
+		 #{yx_xm},
+		 #{yx_zklsh}
+		)
+	</insert>
+	
+	<select id="getPk_zjhm_month" resultType="string" parameterType="string">
+	select a.zjhm
+	from
+	(select zjhm,yx_xm
+	FROM yxkf
+	WHERE rzsj BETWEEN DATE_SUB(SYSDATE(),INTERVAL ${_parameter} month) and SYSDATE()
+	GROUP BY zjhm,yx_xm)a
+	GROUP BY a.zjhm
+	HAVING count(1)>1
+	ORDER BY zjhm
+	</select>
+	
+	
+	<select id="getPk_zjhm_hour"  resultType="String" >
+	select zjhm
+	FROM yxkf 
+	where rzsj BETWEEN DATE_SUB(SYSDATE(),INTERVAL #{param1} hour) and SYSDATE()
+	and zjhm in
+	(select a.zjhm
+	from
+	(select zjhm,yx_xm
+	FROM yxkf
+	WHERE rzsj BETWEEN DATE_SUB(SYSDATE(),INTERVAL #{param2} month) and SYSDATE()
+	GROUP BY zjhm,yx_xm)a
+	GROUP BY a.zjhm
+	HAVING count(1)>1
+	ORDER BY zjhm)
+	</select>
+	
+	
+	
+	
+	<select id="getYxkfByZjhm_month" resultType="com.police.pojo.YxkfPojo" parameterType="com.police.pojo.SqlPojo">
+		select *
+		FROM yxkf
+		WHERE rzsj BETWEEN DATE_SUB(SYSDATE(),INTERVAL #{param1} month) and SYSDATE()
+		and zjhm=#{param2}
+		order by rzsj desc
+	</select>
+	
+
+	
+</mapper>

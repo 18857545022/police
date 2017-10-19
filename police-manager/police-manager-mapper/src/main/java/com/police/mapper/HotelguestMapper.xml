@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.police.mapper.HotelguestMapper">
+
+	<select id="getZjhms_monthByCount" resultType="string" parameterType="int">
+		select zjhm
+		FROM hotelguest
+		WHERE rzsj BETWEEN DATE_SUB(sysdate(),INTERVAL 1 month) and sysdate()
+		GROUP BY zjhm
+		having count(1)>#{count}
+	</select>
+	
+	<select id="getKfjlByZjhm" resultType="com.police.pojo.Hotelguest" parameterType="string">
+		select *
+		FROM hotelguest
+		where rzsj BETWEEN DATE_SUB(SYSDATE(),INTERVAL 1 month) and SYSDATE()
+		AND zjhm=#{zjhm}
+		order by rzsj desc
+	</select>
+	
+	
+	<select id="getKfjlByXb_M" parameterType="int" resultType="com.police.pojo.Hotelguest">
+	select *
+	FROM hotelguest
+	where rzsj BETWEEN DATE_SUB(SYSDATE(),INTERVAL ${_parameter} month) and SYSDATE()
+	AND xb='男'
+	</select>
+	
+	<select id="getKfjlByXb_N" parameterType="int" resultType="com.police.pojo.Hotelguest">
+	select *
+	FROM hotelguest
+	where rzsj BETWEEN DATE_SUB(SYSDATE(),INTERVAL ${_parameter} month) and SYSDATE()
+	AND xb='女'
+	</select>
+	
+	<select id="getKfjlByXb_M_beforeDay" resultType="com.police.pojo.Hotelguest" parameterType="int">
+	select *
+	FROM hotelguest
+	WHERE TO_DAYS(rzsj)=TO_DAYS(now())-${_parameter}
+	AND xb='男';
+	</select>
+	
+	<select id="getKfjlByXb_N_beforeDay" resultType="com.police.pojo.Hotelguest" parameterType="int">
+	select *
+	FROM hotelguest
+	WHERE TO_DAYS(rzsj)=TO_DAYS(now())-${_parameter}
+	AND xb='女';
+	</select>
+	
+	
+	<select id="getKfjlByXb_M_beforeMonth" parameterType="int" resultType="com.police.pojo.Hotelguest" >
+	select *
+	FROM hotelguest
+	WHERE rzsj BETWEEN DATE_SUB(SYSDATE(),INTERVAL ${_parameter}+1 month) AND DATE_SUB(SYSDATE(),INTERVAL ${_parameter} month)
+	and xb='男';
+	</select>
+	
+	<select id="getKfjlByXb_N_beforeMonth" parameterType="int" resultType="com.police.pojo.Hotelguest" >
+	select *
+	FROM hotelguest
+	WHERE rzsj BETWEEN DATE_SUB(SYSDATE(),INTERVAL ${_parameter}+1 month) AND DATE_SUB(SYSDATE(),INTERVAL ${_parameter} month)
+	and xb='女';
+	</select>
+	
+	
+	<select id="getKfjlByXb_N_beforeHours" parameterType="int" resultType="com.police.pojo.Hotelguest" >
+	select *
+	FROM hotelguest
+	WHERE rzsj BETWEEN DATE_SUB(SYSDATE(),INTERVAL #{hour} HOUR) AND SYSDATE()
+	and xb='女';
+	</select>
+	
+	<select id="getKfjlByXb_M_beforeHours" parameterType="int" resultType="com.police.pojo.Hotelguest" >
+	select *
+	FROM hotelguest
+	WHERE rzsj BETWEEN DATE_SUB(SYSDATE(),INTERVAL ${hour} HOUR) AND SYSDATE()
+	and xb='男';
+	</select>
+	
+	
+	<select id="getZjhms_hourByCount" resultType="string" parameterType="int">
+	SELECT zjhm
+	FROM hotelguest
+	where rzsj BETWEEN DATE_SUB(SYSDATE(),INTERVAL ${_parameter} hour) and SYSDATE()
+	</select>
+	
+	
+</mapper>
